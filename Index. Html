@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuickHire — Find Part-Time Jobs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    :root {
+      --purple: #7F77DD;
+      --purple-light: #EEEDFE;
+      --purple-dark: #534AB7;
+      --green: #1D9E75;
+      --green-light: #E1F5EE;
+      --green-dark: #0F6E56;
+      --amber: #EF9F27;
+      --amber-light: #FAEEDA;
+      --red: #E24B4A;
+      --red-light: #FCEBEB;
+      --bg: #F7F6FF;
+      --surface: #FFFFFF;
+      --surface2: #F3F2FA;
+      --border: rgba(127,119,221,0.18);
+      --text: #18172A;
+      --text2: #6B6A80;
+      --text3: #A9A8C0;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 16px rgba(127,119,221,0.10);
+      --shadow-md: 0 4px 32px rgba(127,119,221,0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
+
+    .page { display: none; min-height: 100vh; }
+    .page.active { display: flex; flex-direction: column; }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo {
+      width: 36px; height: 36px; background: var(--purple); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo i { color: #fff; font-size: 20px; }
+    .nav-name { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      padding: 9px 20px; border-radius: var(--radius-sm); font-size: 14px;
+      font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-outline {
+      background: transparent; border: 1.5px solid var(--border);
+      color: var(--text2);
+    }
+    .btn-outline:hover { border-color: var(--purple); color: var(--purple); }
+    .btn-purple { background: var(--purple); color: #fff; }
+    .btn-purple:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-green:hover { background: var(--green-dark); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .btn-ghost { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; font-family: 'DM Sans', sans-serif; padding: 6px 0; }
+    .btn-ghost:hover { color: var(--purple); }
+    .btn-ghost.green:hover { color: var(--green); }
+    .btn-full { width: 100%; justify-content: center; padding: 12px; font-size: 15px; }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+    .btn-danger { background: var(--red-light); color: var(--red); border: 1.5px solid rgba(226,75,74,0.2); }
+    .btn-danger:hover { background: var(--red); color: #fff; }
+
+    /* ── LANDING PAGE ── */
+    #page-landing {
+      background: var(--bg);
+    }
+    .hero-section {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 4rem 1.5rem 2rem; text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--purple-light); color: var(--purple-dark);
+      font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 20px;
+      margin-bottom: 1.5rem; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .hero-title {
+      font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 700; line-height: 1.1;
+      color: var(--text); margin-bottom: 1rem; max-width: 680px;
+    }
+    .hero-title span { color: var(--purple); }
+    .hero-sub {
+      font-size: 17px; color: var(--text2); max-width: 460px; line-height: 1.65; margin-bottom: 3rem;
+    }
+    .role-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      max-width: 600px; width: 100%;
+    }
+    .role-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 1.5rem; cursor: pointer;
+      transition: all 0.2s; text-align: center; position: relative; overflow: hidden;
+    }
+    .role-card::before {
+      content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.2s;
+    }
+    .role-card.seeker::before { background: linear-gradient(135deg, rgba(127,119,221,0.05), transparent); }
+    .role-card.owner::before { background: linear-gradient(135deg, rgba(29,158,117,0.05), transparent); }
+    .role-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .role-card.seeker:hover { border-color: var(--purple); }
+    .role-card.owner:hover { border-color: var(--green); }
+    .role-card:hover::before { opacity: 1; }
+    .role-icon {
+      width: 60px; height: 60px; border-radius: 16px; margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+    }
+    .seeker .role-icon { background: var(--purple-light); color: var(--purple-dark); }
+    .owner .role-icon { background: var(--green-light); color: var(--green-dark); }
+    .role-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+    .role-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+    .role-arrow {
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-top: 1rem; font-size: 13px; font-weight: 500; gap: 4px;
+    }
+    .seeker .role-arrow { color: var(--purple); }
+    .owner .role-arrow { color: var(--green); }
+
+    .landing-stats {
+      display: flex; justify-content: center; gap: 3rem;
+      padding: 1.5rem; margin-top: 1rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-item .num { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: var(--text); }
+    .stat-item .lbl { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+    /* ── AUTH PAGES ── */
+    .auth-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+    .auth-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2.5rem; width: 100%; max-width: 440px;
+      box-shadow: var(--shadow);
+    }
+    .auth-icon {
+      width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 1.25rem;
+    }
+    .auth-icon.purple { background: var(--purple-light); color: var(--purple-dark); }
+    .auth-icon.green { background: var(--green-light); color: var(--green-dark); }
+    .auth-card h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .auth-card .sub { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
+    input[type=text], input[type=email], input[type=password], select, textarea {
+      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 14px; background: var(--surface);
+      color: var(--text); transition: border-color 0.15s; font-family: 'DM Sans', sans-serif;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--purple); }
+    .auth-footer { text-align: center; margin-top: 1.25rem; font-size: 13px; color: var(--text2); }
+    .auth-footer a { color: var(--purple); text-decoration: none; font-weight: 500; }
+    .auth-footer a.green { color: var(--green); }
+    .divider { display: flex; align-items: center; gap: 10px; margin: 1.25rem 0; color: var(--text3); font-size: 12px; }
+    .divider::before, .divider::after { content:''; flex:1; border-top: 1px solid var(--border); }
+
+    /* ── DASHBOARD SHELL ── */
+    .dash-layout { flex: 1; display: flex; flex-direction: column; }
+    .dash-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+    .dash-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+    .dash-body { flex: 1; padding: 2rem; max-width: 900px; margin: 0 auto; width: 100%; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px;
+    }
+    .badge-purple { background: var(--purple-light); color: var(--purple-dark); }
+    .badge-green { background: var(--green-light); color: var(--green-dark); }
+    .badge-amber { background: var(--amber-light); color: #854F0B; }
+    .badge-red { background: var(--red-light); color: #A32D2D; }
+    .badge-gray { background: var(--surface2); color: var(--text2); }
+
+    /* ── SEARCH BAR ── */
+    .search-row {
+      display: flex; gap: 10px; margin-bottom: 1.5rem;
+    }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 16px; }
+    .search-wrap input { padding-left: 38px; }
+    .search-row select { width: 160px; }
+
+    /* ── SHOP LISTING CARDS (reference style) ── */
+    .shop-card {
+      background: var(--surface);
+      border-bottom: 1.5px solid var(--border);
+      margin-bottom: 0;
+      display: flex; align-items: flex-start; gap: 0;
+      padding: 1.5rem 0.5rem 1.5rem 0;
+    }
+    .shop-card:last-child { border-bottom: none; }
+
+    .shop-img-wrap {
+      width: 240px; min-width: 240px; height: 160px;
+      overflow: hidden; position: relative; flex-shrink: 0;
+      border-radius: var(--radius-sm);
+      margin-right: 1.5rem;
+    }
+    .shop-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    .shop-body { flex: 1; min-width: 0; padding: 0; }
+
+    .shop-name {
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700;
+      color: var(--text); margin-bottom: 5px;
+    }
+    .shop-address {
+      font-size: 13px; color: var(--text2); line-height: 1.55; margin-bottom: 1rem;
+    }
+    .shop-address strong { color: var(--text); font-weight: 600; }
+
+    .vacancies-label {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .vacancy-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 0; gap: 12px;
+    }
+    .vacancy-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .vacancy-role-name { font-size: 15px; color: var(--text); min-width: 130px; }
+    .vacancy-count {
+      font-size: 15px; font-weight: 700; color: var(--text);
+    }
+
+    .btn-apply {
+      background: #D6D4E8; color: #2A2850; border: none;
+      border-radius: 4px; padding: 8px 22px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.06em; text-transform: uppercase; flex-shrink: 0;
+    }
+    .btn-apply:hover { background: var(--purple); color: #fff; transform: translateY(-1px); box-shadow: var(--shadow); }
+    .btn-apply.applied { background: var(--green-light); color: var(--green-dark); cursor: default; transform: none; }
+
+    .shop-cards-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 1.5rem;
+      overflow: hidden;
+    }
+
+    @media (max-width: 640px) {
+      .shop-card { flex-direction: column; }
+      .shop-img-wrap { width: 100%; min-width: unset; height: 180px; margin-right: 0; margin-bottom: 1rem; }
+    }
+
+    /* ── STATS GRID ── */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 1.75rem;
+    }
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem; text-align: center;
+    }
+    .stat-box .big { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; }
+    .stat-box .lbl { font-size: 12px; color: var(--text2); margin-top: 4px; }
+    .stat-box.s-purple .big { color: var(--purple); }
+    .stat-box.s-green .big { color: var(--green); }
+    .stat-box.s-amber .big { color: var(--amber); }
+
+    /* ── VACANCY CARDS ── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;
+    }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 600; }
+    .vacancy-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 12px;
+    }
+    .vc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .vc-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; }
+    .vc-slots { font-size: 13px; color: var(--text2); margin-top: 2px; }
+    .vc-actions { display: flex; gap: 8px; }
+    .toggle-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+      cursor: pointer; border: none; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .toggle-on { background: var(--green-light); color: var(--green-dark); }
+    .toggle-on:hover { background: var(--green); color: #fff; }
+    .toggle-off { background: var(--red-light); color: #A32D2D; }
+    .toggle-off:hover { background: var(--red); color: #fff; }
+    .vc-footer { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+    .btn-edit {
+      flex: 1; background: var(--surface2); border: none; border-radius: var(--radius-sm);
+      padding: 7px; font-size: 13px; cursor: pointer; color: var(--text2);
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-edit:hover { background: var(--purple-light); color: var(--purple-dark); }
+    .btn-del {
+      background: var(--surface2); border: none; border-radius: var(--radius-sm);
+      padding: 7px 12px; font-size: 13px; cursor: pointer; color: var(--text2);
+      display: flex; align-items: center; gap: 5px; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-del:hover { background: var(--red-light); color: var(--red); }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center; padding: 1.5rem; font-size: 12px; color: var(--text3);
+      border-top: 1px solid var(--border); background: var(--surface);
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(24,23,42,0.45);
+      z-index: 200; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border-radius: var(--radius); padding: 2rem;
+      max-width: 400px; width: 100%; box-shadow: var(--shadow-md);
+    }
+    .modal h3 { font-size: 18px; font-weight: 600; margin-bottom: 1.25rem; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 3rem 1rem; color: var(--text2); }
+    .empty i { font-size: 40px; color: var(--text3); margin-bottom: 0.75rem; display: block; }
+    .empty p { font-size: 14px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.35s ease both; }
+    .fade-up:nth-child(2) { animation-delay: 0.06s; }
+    .fade-up:nth-child(3) { animation-delay: 0.12s; }
+    .fade-up:nth-child(4) { animation-delay: 0.18s; }
+    .fade-up:nth-child(5) { animation-delay: 0.24s; }
+
+    /* ── DISTRICT PICKER ── */
+    .district-picker-wrap { position: relative; }
+    .district-menu {
+      display: none; position: absolute; top: calc(100% + 8px); right: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow-md);
+      width: 240px; z-index: 200; overflow: hidden;
+    }
+    .district-menu.open { display: block; }
+    .district-menu-title {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--text3); padding: 10px 14px 6px;
+    }
+    .district-list { max-height: 260px; overflow-y: auto; padding-bottom: 6px; }
+    .district-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px; font-size: 14px; color: var(--text); cursor: pointer;
+      transition: background 0.12s;
+    }
+    .district-item:hover { background: var(--surface2); }
+    .district-item.active { color: var(--purple); font-weight: 500; background: var(--purple-light); }
+    .district-item i { font-size: 14px; color: var(--text3); }
+    .district-item.active i { color: var(--purple); }
+
+    @media (max-width: 600px) {
+      .role-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .search-row { flex-direction: column; }
+      .search-row select { width: 100%; }
+      .dash-body { padding: 1rem; }
+      .nav { padding: 0.75rem 1rem; }
+      .landing-stats { gap: 1.5rem; }
+      .hero-section { padding: 2rem 1rem 1rem; }
+      .district-menu { right: auto; left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ LANDING PAGE ═══════════════════════════════ -->
+<div class="page active" id="page-landing">
+  <nav class="nav">
+    <a class="nav-brand" href="#">
+      <div class="nav-logo"><i class="ti ti-bolt"></i></div>
+      <span class="nav-name">QuickHire</span>
+    </a>
+    <div class="nav-actions">
+      <button class="btn btn-outline btn-sm" onclick="showPage('page-user-login')">
+        <i class="ti ti-user"></i> Job Seeker
+      </button>
+      <button class="btn btn-green btn-sm" onclick="showPage('page-owner-login')">
+        <i class="ti ti-building-store"></i> Shop Owner
+      </button>
+    </div>
+  </nav>
+
+  <section class="hero-section">
+    <div class="hero-eyebrow"><i class="ti ti-map-pin"></i> Part-time jobs near you</div>
+    <h1 class="hero-title">Get hired faster,<br><span>hire smarter</span></h1>
+    <p class="hero-sub">QuickHire connects local job seekers with shops looking for reliable part-time staff — quick, simple, and local.</p>
+
+    <div class="role-grid">
+      <div class="role-card seeker fade-up" onclick="showPage('page-user-login')">
+        <div class="role-icon"><i class="ti ti-user-search"></i></div>
+        <h3>Job Seeker</h3>
+        <p>Browse open part-time positions from shops near you</p>
+        <div class="role-arrow">Get started <i class="ti ti-arrow-right"></i></div>
+      </div>
+      <div class="role-card owner fade-up" onclick="showPage('page-owner-login')">
+        <div class="role-icon"><i class="ti ti-building-store"></i></div>
+        <h3>Shop Owner</h3>
+        <p>Post vacancies and find the right part-time staff fast</p>
+        <div class="role-arrow">List jobs <i class="ti ti-arrow-right"></i></div>
+      </div>
+    </div>
+
+    <div class="landing-stats">
+      <div class="stat-item"><div class="num">200+</div><div class="lbl">Local shops</div></div>
+      <div class="stat-item"><div class="num">850+</div><div class="lbl">Jobs filled</div></div>
+      <div class="stat-item"><div class="num">4.8★</div><div class="lbl">Avg. rating</div></div>
+    </div>
+  </section>
+
+  <footer class="footer">© 2025 QuickHire. Connecting local talent with local shops.</footer>
+</div>
+
+
+<!-- ═══════════════════════════════ JOB SEEKER LOGIN ═══════════════════════════════ -->
+<div class="page" id="page-user-login">
+  <nav class="nav">
+    <a class="nav-brand" href="#" onclick="showPage('page-landing'); return false;">
+      <div class="nav-logo"><i class="ti ti-bolt"></i></div>
+      <span class="nav-name">QuickHire</span>
+    </a>
+    <button class="btn-ghost" onclick="showPage('page-landing')"><i class="ti ti-arrow-left"></i> Back</button>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card fade-up">
+      <div class="auth-icon purple"><i class="ti ti-user-search"></i></div>
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to find part-time jobs near you</p>
+
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="user-email" placeholder="you@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="user-pass" placeholder="••••••••" />
+      </div>
+      <button class="btn btn-purple btn-full" onclick="showPage('page-user-dashboard')">
+        <i class="ti ti-login"></i> Sign in as Job Seeker
+      </button>
+      <div class="divider">or</div>
+      <button class="btn btn-outline btn-full">
+        <i class="ti ti-brand-google"></i> Continue with Google
+      </button>
+      <div class="auth-footer">New here? <a href="#">Create a free account</a></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SHOP OWNER LOGIN ═══════════════════════════════ -->
+<div class="page" id="page-owner-login">
+  <nav class="nav">
+    <a class="nav-brand" href="#" onclick="showPage('page-landing'); return false;">
+      <div class="nav-logo"><i class="ti ti-bolt"></i></div>
+      <span class="nav-name">QuickHire</span>
+    </a>
+    <button class="btn-ghost green" onclick="showPage('page-landing')"><i class="ti ti-arrow-left"></i> Back</button>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card fade-up">
+      <div class="auth-icon green"><i class="ti ti-building-store"></i></div>
+      <h2>Shop owner login</h2>
+      <p class="sub">Manage your vacancies and find great staff</p>
+
+      <div class="form-group">
+        <label>Shop / Business name</label>
+        <input type="text" id="shop-name" placeholder="e.g. Green Leaf Bakery" />
+      </div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="owner-email" placeholder="owner@shop.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="owner-pass" placeholder="••••••••" />
+      </div>
+      <button class="btn btn-green btn-full" onclick="showPage('page-owner-dashboard')">
+        <i class="ti ti-login"></i> Sign in as Shop Owner
+      </button>
+      <div class="divider">or</div>
+      <button class="btn btn-outline btn-full">
+        <i class="ti ti-brand-google"></i> Continue with Google
+      </button>
+      <div class="auth-footer">New shop? <a href="#" class="green">Register your business</a></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ JOB SEEKER DASHBOARD ═══════════════════════════════ -->
+<div class="page" id="page-user-dashboard">
+  <nav class="nav">
+    <a class="nav-brand" href="#" onclick="return false;">
+      <div class="nav-logo"><i class="ti ti-bolt"></i></div>
+      <span class="nav-name">QuickHire</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge badge-purple"><i class="ti ti-user"></i> Job Seeker</span>
+      <button class="btn btn-outline btn-sm" onclick="showPage('page-landing')">
+        <i class="ti ti-logout"></i> Sign out
+      </button>
+    </div>
+  </nav>
+
+  <div class="dash-layout">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Browse Jobs <span class="badge badge-purple" id="job-count-badge">8 open</span></div>
+        <div class="dash-sub">Hi Arjun 👋 — here's what's available near you today</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div class="district-picker-wrap">
+          <button class="btn btn-outline btn-sm" onclick="toggleDistrictMenu()" id="district-btn">
+            <i class="ti ti-map-pin"></i> <span id="district-label">Kochi, Kerala</span> <i class="ti ti-chevron-down" style="font-size:12px;margin-left:2px"></i>
+          </button>
+          <div class="district-menu" id="district-menu">
+            <div class="district-menu-title">Select district</div>
+            <div class="district-list" id="district-list"></div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm"><i class="ti ti-adjustments-horizontal"></i> Filter</button>
+      </div>
+    </div>
+
+    <div class="dash-body">
+      <div class="search-row">
+        <div class="search-wrap">
+          <i class="ti ti-search"></i>
+          <input type="text" id="job-search" placeholder="Search shops, roles, categories..." oninput="filterJobs()" />
+        </div>
+        <select id="job-category" onchange="filterJobs()">
+          <option value="">All categories</option>
+          <option>Retail</option>
+          <option>Food & Beverage</option>
+          <option>Delivery</option>
+          <option>Cleaning</option>
+          <option>Tech</option>
+        </select>
+      </div>
+
+      <div id="job-list"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ SHOP OWNER DASHBOARD ═══════════════════════════════ -->
+<div class="page" id="page-owner-dashboard">
+  <nav class="nav">
+    <a class="nav-brand" href="#" onclick="return false;">
+      <div class="nav-logo"><i class="ti ti-bolt"></i></div>
+      <span class="nav-name">QuickHire</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge badge-green"><i class="ti ti-building-store"></i> Shop Owner</span>
+      <button class="btn btn-outline btn-sm" onclick="showPage('page-landing')">
+        <i class="ti ti-logout"></i> Sign out
+      </button>
+    </div>
+  </nav>
+
+  <div class="dash-layout">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Green Leaf Bakery <span class="badge badge-green">Active</span></div>
+        <div class="dash-sub">Manage your job listings and track applications</div>
+      </div>
+    </div>
+
+    <div class="dash-body">
+      <div class="stat-grid" id="owner-stats"></div>
+
+      <div class="section-header">
+        <span class="section-title">Your job listings</span>
+        <button class="btn btn-green btn-sm" onclick="openAddModal()">
+          <i class="ti ti-plus"></i> Add vacancy
+        </button>
+      </div>
+      <div id="vacancy-list"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ ADD VACANCY MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h3><i class="ti ti-plus" style="color:var(--green)"></i> Add new vacancy</h3>
+    <div class="form-group">
+      <label>Job role title</label>
+      <input type="text" id="new-role" placeholder="e.g. Cashier, Kitchen Helper" />
+    </div>
+    <div class="form-group">
+      <label>Number of slots</label>
+      <input type="text" id="new-slots" placeholder="e.g. 2" />
+    </div>
+    <div class="form-group">
+      <label>Working hours</label>
+      <input type="text" id="new-hours" placeholder="e.g. Weekends, 9am–3pm" />
+    </div>
+    <div class="form-group">
+      <label>Pay rate (per hour)</label>
+      <input type="text" id="new-pay" placeholder="e.g. ₹200/hr" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-green" style="flex:1" onclick="saveVacancy()">
+        <i class="ti ti-check"></i> Save listing
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ EDIT VACANCY MODAL ═══════════════════════════════ -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3><i class="ti ti-edit" style="color:var(--purple)"></i> Edit vacancy</h3>
+    <input type="hidden" id="edit-index" />
+    <div class="form-group">
+      <label>Job role title</label>
+      <input type="text" id="edit-role" />
+    </div>
+    <div class="form-group">
+      <label>Number of slots</label>
+      <input type="text" id="edit-slots-input" />
+    </div>
+    <div class="form-group">
+      <label>Working hours</label>
+      <input type="text" id="edit-hours" />
+    </div>
+    <div class="form-group">
+      <label>Pay rate (per hour)</label>
+      <input type="text" id="edit-pay" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-purple" style="flex:1" onclick="updateVacancy()">
+        <i class="ti ti-check"></i> Save changes
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // ── DATA ──
+  const shops = [
+    {
+      id: 0,
+      name: "Lulu Hypermarket",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/LuLu_Mall%2C_Kochi.jpg/1280px-LuLu_Mall%2C_Kochi.jpg",
+      emoji: "🏬", bg: "#E6F1FB",
+      category: "Retail",
+      address: "34/1000, Old NH 47, Edappally Junction, Nethaji Nagar, Edappally, Kochi, Ernakulam, Kerala 682024",
+      hours: "Mon–Sun, 9am–10pm", pay: "₹180–220/hr",
+      vacancies: [
+        { role: "Sales", slots: 12 },
+        { role: "Cashiering", slots: 3 },
+        { role: "Operations", slots: 2 },
+      ]
+    },
+    {
+      id: 1,
+      name: "Green Leaf Bakery",
+      img: "",
+      emoji: "🥐", bg: "#FAEEDA",
+      category: "Food & Beverage",
+      address: "12, MG Road, Ravipuram, Kochi, Kerala 682016",
+      hours: "Weekends, 8am–2pm", pay: "₹175–190/hr",
+      vacancies: [
+        { role: "Counter Assistant", slots: 2 },
+        { role: "Kitchen Helper", slots: 1 },
+      ]
+    },
+    {
+      id: 2,
+      name: "TechZone Store",
+      img: "",
+      emoji: "💻", bg: "#EEEDFE",
+      category: "Tech",
+      address: "G-14, Oberon Mall, Edapally, Kochi, Kerala 682024",
+      hours: "Mon–Sat, 10am–6pm", pay: "₹200–250/hr",
+      vacancies: [
+        { role: "Sales Associate", slots: 1 },
+        { role: "Tech Support", slots: 2 },
+      ]
+    },
+    {
+      id: 3,
+      name: "Speedy Delivery Co.",
+      img: "",
+      emoji: "🛵", bg: "#FAECE7",
+      category: "Delivery",
+      address: "Near Vytilla Hub, Vytilla, Kochi, Kerala 682019",
+      hours: "Flexible shifts", pay: "₹230–260/hr",
+      vacancies: [
+        { role: "Delivery Partner", slots: 4 },
+        { role: "Sorting Staff", slots: 2 },
+      ]
+    },
+    {
+      id: 4,
+      name: "Café Mocha",
+      img: "",
+      emoji: "☕", bg: "#E1F5EE",
+      category: "Food & Beverage",
+      address: "2nd Floor, Centre Square Mall, MG Road, Kochi, Kerala 682035",
+      hours: "Weekday mornings", pay: "₹170–195/hr",
+      vacancies: [
+        { role: "Barista", slots: 1 },
+        { role: "Cashier", slots: 1 },
+      ]
+    },
+    {
+      id: 5,
+      name: "Sunrise Supermart",
+      img: "",
+      emoji: "🛒", bg: "#E6F1FB",
+      category: "Retail",
+      address: "Near KSRTC Bus Stand, Aluva, Ernakulam, Kerala 683101",
+      hours: "Evenings, 5–9pm", pay: "₹155–175/hr",
+      vacancies: [
+        { role: "Stock Helper", slots: 2 },
+        { role: "Checkout Staff", slots: 2 },
+        { role: "Security", slots: 1 },
+      ]
+    },
+  ];
+
+  let applied = new Set();
+
+  const vacancies = [
+    { role: "Counter Assistant", slots: 2, hours: "Weekends, 8am–2pm", pay: "₹180/hr", status: true },
+    { role: "Kitchen Helper", slots: 1, hours: "Weekday evenings", pay: "₹160/hr", status: false },
+    { role: "Cashier", slots: 1, hours: "Mon–Fri, 3–8pm", pay: "₹175/hr", status: true },
+  ];
+
+  // ── ROUTING ──
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'page-user-dashboard') renderJobs();
+    if (id === 'page-owner-dashboard') { renderStats(); renderVacancies(); }
+  }
+
+  // ── JOB SEEKER ──
+  function filterJobs() { renderJobs(); }
+
+  function renderJobs() {
+    const q = (document.getElementById('job-search')?.value || '').toLowerCase();
+    const cat = document.getElementById('job-category')?.value || '';
+    const filtered = shops.filter(s =>
+      (!q || s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q) ||
+             s.vacancies.some(v => v.role.toLowerCase().includes(q))) &&
+      (!cat || s.category === cat)
+    );
+    const totalSlots = filtered.reduce((a, s) => a + s.vacancies.reduce((b, v) => b + v.slots, 0), 0);
+    document.getElementById('job-count-badge').textContent = totalSlots + ' openings';
+    const el = document.getElementById('job-list');
+    if (filtered.length === 0) {
+      el.innerHTML = '<div class="empty"><i class="ti ti-search-off"></i><p>No shops found matching your search.</p></div>';
+      return;
+    }
+    el.innerHTML = '<div class="shop-cards-wrap">' + filtered.map(s => {
+      const imgTag = s.img
+        ? `<img src="${s.img}" alt="${s.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : '';
+      const fallback = `<div style="display:${s.img?'none':'flex'};width:100%;height:100%;align-items:center;justify-content:center;font-size:48px;background:${s.bg}">${s.emoji}</div>`;
+
+      const vacancyRows = s.vacancies.map((v, vi) => {
+        const key = `${s.id}-${vi}`;
+        const isApplied = applied.has(key);
+        return `<div class="vacancy-row">
+          <div class="vacancy-left">
+            <span class="vacancy-role-name">${v.role}:</span>
+            <span class="vacancy-count">${v.slots}</span>
+          </div>
+          ${isApplied
+            ? `<button class="btn-apply applied"><i class="ti ti-check"></i> Applied</button>`
+            : `<button class="btn-apply" onclick="applyVacancy('${key}')">Apply</button>`}
+        </div>`;
+      }).join('');
+
+      return `<div class="shop-card fade-up">
+        <div class="shop-img-wrap">${imgTag}${fallback}</div>
+        <div class="shop-body">
+          <div class="shop-name">${s.name}</div>
+          <div class="shop-address"><strong>Address:</strong> ${s.address}</div>
+          <div class="vacancies-label">Job vacancies</div>
+          ${vacancyRows}
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  function applyVacancy(key) {
+    applied.add(key);
+    renderJobs();
+  }
+
+  // ── SHOP OWNER ──
+  function renderStats() {
+    const open = vacancies.filter(v => v.status).length;
+    document.getElementById('owner-stats').innerHTML = `
+      <div class="stat-box s-purple"><div class="big">${open}</div><div class="lbl">Open vacancies</div></div>
+      <div class="stat-box s-green"><div class="big">12</div><div class="lbl">Applications</div></div>
+      <div class="stat-box s-amber"><div class="big">5</div><div class="lbl">Shortlisted</div></div>
+    `;
+  }
+
+  function renderVacancies() {
+    const el = document.getElementById('vacancy-list');
+    if (vacancies.length === 0) {
+      el.innerHTML = '<div class="empty"><i class="ti ti-clipboard-off"></i><p>No vacancies yet. Add your first listing!</p></div>';
+      return;
+    }
+    el.innerHTML = vacancies.map((v, i) => `
+      <div class="vacancy-card fade-up">
+        <div class="vc-top">
+          <div>
+            <div class="vc-title">${v.role}</div>
+            <div class="vc-slots"><i class="ti ti-users" style="font-size:12px;vertical-align:-1px"></i> ${v.slots} slot${v.slots>1?'s':''} &nbsp;·&nbsp; ${v.hours} &nbsp;·&nbsp; ${v.pay}</div>
+          </div>
+          <button class="toggle-btn ${v.status ? 'toggle-on' : 'toggle-off'}" onclick="toggleVacancy(${i})">
+            <i class="ti ${v.status ? 'ti-eye' : 'ti-eye-off'}"></i>
+            ${v.status ? 'Visible' : 'Hidden'}
+          </button>
+        </div>
+        <div class="vc-footer">
+          <button class="btn-edit" onclick="openEditModal(${i})"><i class="ti ti-edit"></i> Edit listing</button>
+          <button class="btn-del" onclick="removeVacancy(${i})"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>`).join('');
+    renderStats();
+  }
+
+  function toggleVacancy(i) {
+    vacancies[i].status = !vacancies[i].status;
+    renderVacancies();
+  }
+
+  function removeVacancy(i) {
+    if (confirm('Remove this vacancy?')) {
+      vacancies.splice(i, 1);
+      renderVacancies();
+    }
+  }
+
+  // ── MODALS ──
+  function openAddModal() {
+    document.getElementById('new-role').value = '';
+    document.getElementById('new-slots').value = '';
+    document.getElementById('new-hours').value = '';
+    document.getElementById('new-pay').value = '';
+    document.getElementById('add-modal').classList.add('open');
+  }
+
+  function openEditModal(i) {
+    const v = vacancies[i];
+    document.getElementById('edit-index').value = i;
+    document.getElementById('edit-role').value = v.role;
+    document.getElementById('edit-slots-input').value = v.slots;
+    document.getElementById('edit-hours').value = v.hours;
+    document.getElementById('edit-pay').value = v.pay;
+    document.getElementById('edit-modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  }
+
+  function saveVacancy() {
+    const role = document.getElementById('new-role').value.trim();
+    const slots = parseInt(document.getElementById('new-slots').value) || 1;
+    const hours = document.getElementById('new-hours').value.trim() || 'Flexible';
+    const pay = document.getElementById('new-pay').value.trim() || '₹200/hr';
+    if (!role) { alert('Please enter a job role.'); return; }
+    vacancies.push({ role, slots, hours, pay, status: true });
+    closeModal();
+    renderVacancies();
+  }
+
+  function updateVacancy() {
+    const i = parseInt(document.getElementById('edit-index').value);
+    vacancies[i].role = document.getElementById('edit-role').value.trim() || vacancies[i].role;
+    vacancies[i].slots = parseInt(document.getElementById('edit-slots-input').value) || vacancies[i].slots;
+    vacancies[i].hours = document.getElementById('edit-hours').value.trim() || vacancies[i].hours;
+    vacancies[i].pay = document.getElementById('edit-pay').value.trim() || vacancies[i].pay;
+    closeModal();
+    renderVacancies();
+  }
+
+  // Close modal on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  });
+
+  // ── DISTRICT PICKER ──
+  const keralaDistricts = [
+    "Thiruvananthapuram", "Kollam", "Pathanamthitta", "Alappuzha",
+    "Kottayam", "Idukki", "Ernakulam (Kochi)", "Thrissur",
+    "Palakkad", "Malappuram", "Kozhikode", "Wayanad",
+    "Kannur", "Kasaragod"
+  ];
+
+  let selectedDistrict = "Ernakulam (Kochi)";
+
+  function buildDistrictMenu() {
+    const list = document.getElementById('district-list');
+    if (!list) return;
+    list.innerHTML = keralaDistricts.map(d => `
+      <div class="district-item ${d === selectedDistrict ? 'active' : ''}" onclick="selectDistrict('${d}')">
+        <i class="ti ti-map-pin"></i> ${d}
+      </div>`).join('');
+  }
+
+  function toggleDistrictMenu() {
+    const menu = document.getElementById('district-menu');
+    const isOpen = menu.classList.contains('open');
+    menu.classList.toggle('open', !isOpen);
+    if (!isOpen) buildDistrictMenu();
+  }
+
+  function selectDistrict(name) {
+    selectedDistrict = name;
+    const shortName = name.replace(' (Kochi)', '');
+    document.getElementById('district-label').textContent = shortName + ', Kerala';
+    document.getElementById('district-menu').classList.remove('open');
+  }
+
+  // Close district menu when clicking outside
+  document.addEventListener('click', e => {
+    const wrap = document.querySelector('.district-picker-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('district-menu')?.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
